@@ -309,8 +309,68 @@ def sum_model(A, B, C, N_A, N_B, N_C, L_A, L_B, L_C, out, r_X, params_yes, param
     
     return result
     
+#
+def notA_or_notB(state, params):
+    L_A, L_B, a, b, out, N_A, N_B = state
+
+    delta_L, gamma_A, gamma_B, n_a, n_b, theta_A, theta_B, eta_a, eta_b, omega_a, omega_b, m_a, m_b, delta_a, delta_b, rho_a, rho_b, r_A, r_B = params
+
+    params_not = delta_L, gamma_A, n_b, theta_A, eta_a, omega_a, m_a, delta_a, rho_a
+
+    d_out = 0
+
+    state_not_A = L_A, out, a, N_A
+    dL_A, dd = not_cell_wrapper(state_not_A, params_not)
+    d_out += dd
+    dN_A = 0
+
+    state_not_B = L_B, out, b, N_B
+    dL_B, dd = not_cell_wrapper(state_not_B, params_not)
+    d_out += dd
+    dN_B = 0
+
+    return dL_A, dL_B, d_out, dN_A, dN_B
+
     
+def carryOut_model(state, params):
+    L_A, L_B, L_Ci, L_AB, L_AC, L_BC, a, b, ci, cout, ab, ac, bc, N_A, N_B, N_Ci, N_AB, N_AC, N_BC, N_Cout = state
+
+    stateA1 = L_A, a, ab, N_A, N_AB
+    stateB1 = L_B, b, ab, N_B, N_AB
+    stateAB = L_AB, ab, cout, N_AB, N_Cout
     
+    stateA2 = L_A, a, ac, N_A, N_AC
+    stateC1 = L_Ci, ci, ac, N_Ci, N_AC
+    stateAC = L_AC, ac, cout, N_AC, N_Cout
+
+    stateB2 = L_A, b, bc, N_A, N_BC
+    stateC2 = L_Ci, ci, bc, N_Ci, N_BC
+    stateBC = L_BC, bc, cout, N_BC, N_Cout
+
+    delta_L, gamma_A, gamma_B, n_a, n_b, theta_A, theta_B, eta_a, eta_b, omega_a, omega_b, m_a, m_b, delta_a, delta_b, rho_a, rho_b, r_A, r_B = params
+
+    params_A = delta_L, gamma_A, n_b, theta_A, eta_a, omega_a, m_a, delta_a, rho_a
+
+    dL_A1_dt, da1_dt = not_cell(stateA1, params_A)
+    dL_B1_dt, db1_dt = not_cell(stateB1, params_A)
+    dl_AB_dt, dab_dt = not_cell(stateAB, params_A)
+
+    dL_A2_dt, da2_dt = not_cell(stateA2, params_A)
+    dL_C1_dt, dc1_dt = not_cell(stateC1, params_A)
+    dl_AC_dt, dac_dt = not_cell(stateAC, params_A)
+
+    dL_B2_dt, db2_dt = not_cell(stateB2, params_A)
+    dL_C2_dt, dc2_dt = not_cell(stateC2, params_A)
+    dl_BC_dt, dbc_dt = not_cell(stateBC, params_A)
+
+    dN_A_dt = 0
+    dN_B_dt = 0
+    dN_C_dt = 0
+        
+    return np.array([dl_AB_dt, dl_AC_dt, dl_BC_dt, dab_dt, dac_dt, dbc_dt, dN_A_dt, dN_B_dt, dN_C_dt])
+
+def carryOut_model_ODE(T, state, params):
+    return carryOut_model(state, params)
     
 params = delta_L, gamma_L_X, n_y, theta_L_X, eta_x, omega_x, m_x, delta_x, rho_x #delta_y, rho_x, rho_y, r_X 
 
@@ -337,3 +397,9 @@ Y[0,:] = Y0
 #print(not_model(Y0, T[0], params))
 
 print(nand(1,0,1,1,1,1, T[0],r_X, params))
+
+####
+params = [delta_L, gamma_A, gamma_B, n_a, n_b, theta_A, theta_B, eta_a, eta_b, omega_a, omega_b, m_a, m_b, delta_a, delta_b, rho_a, rho_b, r_A, r_B]
+state7 = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+test_model = carryOut_model(state7, params)
+print(test_model)
