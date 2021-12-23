@@ -176,25 +176,143 @@ def yes_model(state, T, params):
 
     return np.array([da_dt, db_dt, dN_A_dt])
     
-    
-def sum_model(state, T, params):
+   
+def not_not_yes_or(A, B, C, N_A, N_B, N_C, L_A, L_B, out, r_X, params_not, params_yes):
+    # NOT A or NOT B or C
 
-    delta_L, gamma_L_X, n_y, theta_L_X, eta_x, omega_x, m_x, delta_x, rho_x, gamma_x, theta_x, r_X = params
-    params_yes = gamma_x, n_y, theta_x, delta_x, rho_x
-    params_not = delta_L, gamma_L_X, n_y, theta_L_X, eta_x, omega_x, m_x, delta_x, rho_x
-    out = 0.5
-    N_A, N_B, N_C, L_A, L_B = 1,1,1,1,1
-    #
-    A, B, C_IN = state[:3]
-    
-    
-    m_4_3 = nand(A,B, N_A, N_B, L_A, L_B, out, r_X, params_not)
-    print(m_4_3)
+    d_out = 0
 
+    state_not_A = L_A, out, A, N_A
+    dL_A, dd = not_cell_wrapper(state_not_A, params_not)
+    d_out += dd
+    dN_A = population(N_A, r_X)
+
+    state_not_B = L_B, out, B, N_B
+    dL_B, dd = not_cell_wrapper(state_not_B, params_not)
+    d_out += dd
+    dN_B = population(N_B, r_X)
+
+    state_yes_C = out, C, N_C
+    d_out += yes_cell_wrapper(state_yes_C, params_yes)
+    dN_C = population(N_C, r_X)
+
+
+    return dN_A, dN_B, dN_C, dL_A, dL_B, d_out
+    
+    
+def not_yes_yes_or(A, B, C, N_A, N_B, N_C, L_A, out, r_X, params_not, params_yes):
+    # NOT A or NOT B or C
+
+    d_out = 0
+
+    state_not_A = L_A, out, A, N_A
+    dL_A, dd = not_cell_wrapper(state_not_A, params_not)
+    d_out += dd
+    dN_A = population(N_A, r_X)
+
+    state_yes_B = out, B, N_B
+    d_out += yes_cell_wrapper(state_yes_B, params_yes)
+    dN_B = population(N_B, r_X)
+
+    state_yes_C = out, C, N_C
+    d_out += yes_cell_wrapper(state_yes_C, params_yes)
+    dN_C = population(N_C, r_X)
+
+
+    return dN_A, dN_B, dN_C, dL_A, d_out
+    
+    
+def nand3(A, B, C, N_A, N_B, N_C, L_A, L_B, out, r_X, params_not, params_yes):
+
+    d_out = 0
+    
+    
+    state_not_A = L_A, out, A, N_A
+    dL_A, dd = not_cell_wrapper(state_not_A, params_not)
+    d_out += dd
+    dN_A = population(N_A, r_X)
+
+    state_not_B = L_B, out, B, N_B
+    dL_B, dd = not_cell_wrapper(state_not_B, params_not)
+    d_out += dd
+    dN_B = population(N_B, r_X)
+    
+    state_not_C = L_C, out, C, N_C
+    dL_C, dd = not_cell_wrapper(state_not_C, params_not)
+    d_out += dd
+    dN_C = population(N_C, r_X)
+
+    return dN_A, dN_B, dN_C, dL_A, dL_B, dL_C, d_out
+    
+    
+def not_or4(A, B, C, D, N_A, N_B, N_C, N_D, L_A, L_B, L_C, L_D, out, r_X, params_not):
+    # NOT A or NOT B or NOT C or NOT D
+
+    d_out = 0
+
+    state_not_A = L_A, out, A, N_A
+    dL_A, dd = not_cell_wrapper(state_not_A, params_not)
+    d_out += dd
+    dN_A = population(N_A, r_X)
+
+    state_not_B = L_B, out, B, N_B
+    dL_B, dd = not_cell_wrapper(state_not_B, params_not)
+    d_out += dd
+    dN_B = population(N_B, r_X)
+
+    state_not_C = L_C, out, C, N_C
+    dL_C, dd = not_cell_wrapper(state_not_C, params_not)
+    d_out += dd
+    dN_C = population(N_C, r_X)
+
+    state_not_D = L_D, out, D, N_D
+    dL_D, dd = not_cell_wrapper(state_not_D, params_not)
+    d_out += dd
+    dN_D = population(N_D, r_X)
+
+    return dN_A, dN_B, dN_C, dN_D, dL_A, dL_B, dL_C, dL_D, d_out
     
     
     
-params = delta_L, gamma_L_X, n_y, theta_L_X, eta_x, omega_x, m_x, delta_x, delta_y, rho_x, rho_y, r_X 
+def or4(A, B, C, D, N_A, N_B, N_C, N_D, out, r_X, params_yes):
+    # YES x OR YES y = OR
+
+    d_out = 0
+
+    state_yes_A = out, A, N_A
+    d_out += yes_cell_wrapper(state_yes_A, params_yes)
+    dN_A = population(N_A, r_X)
+
+    state_yes_B = out, B, N_B
+    d_out += yes_cell_wrapper(state_yes_B, params_yes)
+    dN_B = population(N_B, r_X)
+    
+    state_yes_C = out, C, N_C
+    d_out += yes_cell_wrapper(state_yes_C, params_yes)
+    dN_C = population(N_C, r_X)
+    
+    state_yes_D = out, D, N_D
+    d_out += yes_cell_wrapper(state_yes_D, params_yes)
+    dN_D = population(N_D, r_X)
+
+    return dN_A, dN_B, dN_C, dN_D, d_out
+    
+    
+def sum_model(A, B, C, N_A, N_B, N_C, L_A, L_B, L_C, out, r_X, params_yes, params_not):
+    clause1 = not_yes_yes_or(A, B, C, N_A, N_B, N_C, L_A, out, r_X, params_not, params_yes)
+    clause2 = not_yes_yes_or(B, A, C, N_B, N_A, N_C, L_B, out, r_X, params_not, params_yes)
+    clause3 = not_yes_yes_or(C, A, B, N_C, N_A, N_B, L_C, out, r_X, params_not, params_yes)
+    clause4 = not_not_yes_or(A, B, C, N_A, N_B, N_C, L_A, L_B, out, r_X, params_not, params_yes)
+    
+    
+    result = not_or4(clause1[4], clause2[4], clause3[4], clause4[5], N_A, N_B, N_C, N_D, L_A, L_B, L_C, L_D, out, r_X, params_not)  # tule surely niso za notri dat N_A, N_B, N_C, N_D, L_A, L_B, L_C, L_D, ampak kaj vraga das tu notri??
+    
+    return result
+    
+    
+    
+    
+params = delta_L, gamma_L_X, n_y, theta_L_X, eta_x, omega_x, m_x, delta_x, rho_x #delta_y, rho_x, rho_y, r_X 
 
 
 # simulation parameters
@@ -216,4 +334,6 @@ dt = t_end/N
 T = np.arange(0,t1+dt,dt)
 Y = np.zeros([1+N,4])
 Y[0,:] = Y0 
-print(not_model(Y0, T[0], params))
+#print(not_model(Y0, T[0], params))
+
+print(nand(1,0,1,1,1,1, T[0],r_X, params))
