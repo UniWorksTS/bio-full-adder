@@ -14,8 +14,6 @@ def yes_cell(state, params):
     
     return dx_dt
     
-    
-    
 def not_cell(state, params):
     L_X, x, y, N_X, N_Y = state
     delta_L, gamma_L_X, n_y, theta_L_X, eta_x, omega_x, m_x, delta_x, rho_x = params
@@ -309,29 +307,6 @@ def sum_model(A, B, C, N_A, N_B, N_C, L_A, L_B, L_C, out, r_X, params_yes, param
     
     return result
     
-#
-def notA_or_notB(state, params):
-    L_A, L_B, a, b, out, N_A, N_B = state
-
-    delta_L, gamma_A, gamma_B, n_a, n_b, theta_A, theta_B, eta_a, eta_b, omega_a, omega_b, m_a, m_b, delta_a, delta_b, rho_a, rho_b, r_A, r_B = params
-    #delta_L, gamma_L_X, n_y, theta_L_X, eta_x, omega_x, m_x, delta_x, rho_x
-    params_not = delta_L, gamma_A, n_b, theta_A, eta_a, omega_a, m_a, delta_a, rho_a
-
-    d_out = 0
-
-    state_not_A = L_A, out, a, N_A
-    dL_A, dd = not_cell_wrapper(state_not_A, params_not)
-    d_out += dd
-    dN_A = 0
-
-    state_not_B = L_B, out, b, N_B
-    dL_B, dd = not_cell_wrapper(state_not_B, params_not)
-    d_out += dd
-    dN_B = 0
-
-    return dL_A, dL_B, d_out, dN_A, dN_B
-
-    
 def carryOut_model(state, params):
     L_A1, L_A2, L_B1, L_B2, L_Ci1, L_Ci2, L_AB, L_AC, L_BC, a, b, ci, cout, ab, ac, bc = state
 
@@ -376,7 +351,6 @@ def carryOut_model_ODE(T, state, params):
     
 params = delta_L, gamma_L_X, n_y, theta_L_X, eta_x, omega_x, m_x, delta_x, rho_x #delta_y, rho_x, rho_y, r_X 
 
-
 # simulation parameters
 t_end = 1500
 N = t_end
@@ -389,8 +363,6 @@ Y0[3] = 1 # N_A
 
 T = np.linspace(0, t_end, N)
 
-
-
 t1 = t_end
 dt = t_end/N
 T = np.arange(0,t1+dt,dt)
@@ -399,13 +371,3 @@ Y[0,:] = Y0
 #print(not_model(Y0, T[0], params))
 
 #print(nand(1,0,1,1,1,1, T[0],r_X, params))
-
-####
-params = [delta_L, gamma_A, gamma_B, n_a, n_b, theta_A, theta_B, eta_a, eta_b, omega_a, omega_b, m_a, m_b, delta_a, delta_b, rho_a, rho_b, r_A, r_B]
-state7 = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-#test_model = carryOut_model(state7, params)
-#print(test_model)
-#A = Y[:,6]
-#B = Y[:,7]
-#Cin = Y[:,8]
-#Cout = Y[:,9]
