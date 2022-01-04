@@ -296,17 +296,66 @@ def or4(A, B, C, D, N_A, N_B, N_C, N_D, out, r_X, params_yes):
     return dN_A, dN_B, dN_C, dN_D, d_out
     
     
-def sum_model(A, B, C, N_A, N_B, N_C, L_A, L_B, L_C, out, r_X, params_yes, params_not):
-    clause1 = not_yes_yes_or(A, B, C, N_A, N_B, N_C, L_A, out, r_X, params_not, params_yes)
-    clause2 = not_yes_yes_or(B, A, C, N_B, N_A, N_C, L_B, out, r_X, params_not, params_yes)
-    clause3 = not_yes_yes_or(C, A, B, N_C, N_A, N_B, L_C, out, r_X, params_not, params_yes)
-    clause4 = not_not_yes_or(A, B, C, N_A, N_B, N_C, L_A, L_B, out, r_X, params_not, params_yes)
-    
-    
-    result = not_or4(clause1[4], clause2[4], clause3[4], clause4[5], N_A, N_B, N_C, N_D, L_A, L_B, L_C, L_D, out, r_X, params_not)  # tule surely niso za notri dat N_A, N_B, N_C, N_D, L_A, L_B, L_C, L_D, ampak kaj vraga das tu notri??
-    
-    return result
-    
+def sum_model(state, params):
+    L_A1, L_A2, L_A3, L_A4, L_B1, L_B2, L_B3, L_B4, L_Ci1, L_Ci2, L_Ci3, L_Ci4, L_AnotBnotC, L_notABnotC, L_notAnotBC, L_ABnotC, a, b, ci, sumout, AnotBnotC, notABnotC, notAnotBC, ABnotC = state
+
+    stateA1 = L_A1, AnotBnotC, a, 1, 1
+    stateB1 = L_B1, AnotBnotC, b, 1, 1
+    stateC1 = L_Ci1, AnotBnotC, ci, 1, 1
+    stateAnotBnotC = L_AnotBnotC, sumout, AnotBnotC, 1, 1
+
+    stateA2 = L_A2, notABnotC, a, 1, 1
+    stateB2 = L_B2, notABnotC, b, 1, 1
+    stateC2 = L_Ci2, notABnotC, ci, 1, 1
+    statenotABnotC = L_notABnotC, sumout, notABnotC, 1, 1
+
+    stateA3 = L_A3, notAnotBC, a, 1, 1
+    stateB3 = L_B3, notAnotBC, b, 1, 1
+    stateC3 = L_Ci3, notAnotBC, ci, 1, 1
+    statenotAnotBC = L_notAnotBC, sumout, notAnotBC, 1, 1
+
+    stateA4 = L_A4, ABnotC, a, 1, 1
+    stateB4 = L_B4, ABnotC, b, 1, 1
+    stateC4 = L_Ci4, ABnotC, ci, 1, 1
+    stateABnotC = L_ABnotC, sumout, ABnotC, 1, 1
+
+    delta_L, gamma_A, gamma_B, n_a, n_b, theta_A, theta_B, eta_a, eta_b, omega_a, omega_b, m_a, m_b, delta_a, delta_b, rho_a, rho_b, r_A, r_B = params
+
+    params_A = delta_L, gamma_A, n_b, theta_A, eta_a, omega_a, m_a, delta_a, rho_a
+
+    dL_A1_dt, dAnotBnotC1_dt = not_cell(stateA1, params_A)
+    dL_B1_dt, dAnotBnotC2_dt = not_cell(stateB1, params_A)
+    dL_C1_dt, dAnotBnotC3_dt = not_cell(stateC1, params_A)
+    dAnotBnotC_dt = dAnotBnotC1_dt + dAnotBnotC2_dt + dAnotBnotC3_dt
+    dl_AnotBnotC_dt, dsumout1_dt = not_cell(stateAnotBnotC, params_A)
+
+    dL_A2_dt, dnotABnotC1_dt = not_cell(stateA2, params_A)
+    dL_B2_dt, dnotABnotC2_dt = not_cell(stateB2, params_A)
+    dL_C2_dt, dnotABnotC3_dt = not_cell(stateC2, params_A)
+    dnotABnotC_dt = dnotABnotC1_dt + dnotABnotC2_dt + dnotABnotC3_dt
+    dl_notABnotC_dt, dsumout2_dt = not_cell(statenotABnotC, params_A)
+
+    dL_A3_dt, dnotAnotBC1_dt = not_cell(stateA3, params_A)
+    dL_B3_dt, dnotAnotBC2_dt = not_cell(stateB3, params_A)
+    dL_C3_dt, dnotAnotBC3_dt = not_cell(stateC3, params_A)
+    dnotAnotBC_dt = dnotAnotBC1_dt + dnotAnotBC2_dt + dnotAnotBC3_dt
+    dl_notAnotBC_dt, dsumout3_dt = not_cell(statenotAnotBC, params_A)
+
+    dL_A4_dt, dABnotC1_dt = not_cell(stateA4, params_A)
+    dL_B4_dt, dABnotC2_dt = not_cell(stateB4, params_A)
+    dL_C4_dt, dABnotC3_dt = not_cell(stateC4, params_A)
+    dABnotC_dt = dABnotC1_dt + dABnotC2_dt + dABnotC3_dt
+    dl_ABnotC_dt, dsumout4_dt = not_cell(stateABnotC, params_A)
+
+
+
+    dsumout_dt = dsumout1_dt + dsumout2_dt + dsumout3_dt + dsumout4_dt
+        
+    return np.array([dL_A1_dt, dL_A2_dt, dL_A3_dt, dL_A4_dt, dL_B1_dt, dL_B2_dt, dL_B3_dt, dL_B4_dt, dL_C1_dt, dL_C2_dt, dL_C3_dt, dL_C4_dt, dl_AnotBnotC_dt, dl_notABnotC_dt, dl_ABnotC_dt, dl_notAnotBC_dt, 0, 0, 0, dsumout_dt, dAnotBnotC_dt, dnotABnotC_dt, dnotAnotBC_dt, dABnotC_dt])
+
+def sum_model_ODE(T, state, params):
+    return sum_model(state, params)
+
 def carryOut_model(state, params):
     L_A1, L_A2, L_B1, L_B2, L_Ci1, L_Ci2, L_AB, L_AC, L_BC, a, b, ci, cout, ab, ac, bc = state
 
