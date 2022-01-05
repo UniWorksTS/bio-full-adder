@@ -41,7 +41,7 @@ sum = Y[:,-5]
 AnotBnotC = Y[:,-4]
 notABnotC = Y[:,-3]
 notAnotBC = Y[:,-2]
-ABnotC = Y[:,-1]
+ABC = Y[:,-1]
 plt.plot(T, A)
 plt.plot(T, B)
 plt.plot(T, Cin)
@@ -49,6 +49,6 @@ plt.plot(T, sum)
 plt.plot(T, AnotBnotC)
 plt.plot(T, notABnotC)
 plt.plot(T, notAnotBC)
-plt.plot(T, ABnotC)
-plt.legend(["A", "B", "Cin", "sum", "AnotBnotC", "notABnotC","notAnotBC", "ABnotC"])
+plt.plot(T, ABC)
+plt.legend(["A", "B", "Cin", "sum", "AnotBnotC", "notABnotC","notAnotBC", "ABC"])
 plt.show()
