@@ -13,17 +13,17 @@ params[-3] = 0
 t_end = 100
 N = t_end
 
-Y0 = np.zeros(24)
-Y0[-8] = 1 #A
+Y0 = np.zeros(18)
+Y0[-8] = 0 #A
 Y0[-7] = 0 #B
-Y0[-6] = 0 #Ci
+Y0[-6] = 1 #Ci
 #Y0[-5] = 1 #sum
 T = np.linspace(0, t_end, N)
 
 t1 = t_end
 dt = t_end/N
 T = np.arange(0,t1+dt,dt)
-Y = np.zeros([1+N,24])
+Y = np.zeros([1+N,18])
 Y[0,:] = Y0
 
 r = ode(sum_model_ODE).set_integrator('zvode', method='bdf')
