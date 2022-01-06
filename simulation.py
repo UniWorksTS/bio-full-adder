@@ -19,9 +19,9 @@ for a in range(2):
             fig, axs = plt.subplots(2)
             fig.suptitle('simulation results')
             Y0 = np.zeros(16)
-            Y0[-7] = a #A
-            Y0[-6] = b #B
-            Y0[-5] = c #Ci
+            Y0[-7] = a * 10#A
+            Y0[-6] = b * 10#B
+            Y0[-5] = c * 10#Ci
             #Y0[-4] = 1 #Co
             T = np.linspace(0, t_end, N)
 
@@ -50,15 +50,15 @@ for a in range(2):
             axs[0].plot(T, BC)
             axs[0].plot(T, CinC)
             axs[0].plot(T, CoutC)
-            axs[0].plot(T, ABC)
-            axs[0].plot(T, ACC)
-            axs[0].plot(T, BCC)
-            axs[0].legend(["A", "B", "Cin", "Cout", "AB", "AC","BC"])
+            #axs[0].plot(T, ABC)
+            #axs[0].plot(T, ACC)
+            #axs[0].plot(T, BCC)
+            axs[0].legend(["A", "B", "Cin", "Cout"])
 
             Z0 = np.zeros(18)
-            Z0[-8] = a #A
-            Z0[-7] = b #B
-            Z0[-6] = c #Ci
+            Z0[-8] = a * 10#A
+            Z0[-7] = b * 10#B
+            Z0[-6] = c * 10#Ci
             #Y0[-5] = 1 #sum
             T = np.linspace(0, t_end, N)
 
@@ -87,8 +87,8 @@ for a in range(2):
             axs[1].plot(T, BS)
             axs[1].plot(T, CinS)
             axs[1].plot(T, CoutS)
-            axs[1].plot(T, ABS)
-            axs[1].plot(T, ACS)
-            axs[1].plot(T, BCS)
-            axs[1].legend(["A", "B", "Cin", "sum", "AnotBnotC", "notABnotC","notAnotBC", "ABC"])
+            #axs[1].plot(T, ABS)
+            #axs[1].plot(T, ACS)
+            #axs[1].plot(T, BCS)
+            axs[1].legend(["A", "B", "Cin", "sum"])
             plt.show()
