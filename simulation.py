@@ -19,9 +19,9 @@ for a in range(2):
             fig, axs = plt.subplots(2)
             fig.suptitle('simulation results')
             Y0 = np.zeros(16)
-            Y0[-7] = a * 10#A
-            Y0[-6] = b * 10#B
-            Y0[-5] = c * 10#Ci
+            Y0[-7] = a #A
+            Y0[-6] = b #B
+            Y0[-5] = c #Ci
             #Y0[-4] = 1 #Co
             T = np.linspace(0, t_end, N)
 
@@ -56,9 +56,9 @@ for a in range(2):
             axs[0].legend(["A", "B", "Cin", "Cout"])
 
             Z0 = np.zeros(18)
-            Z0[-8] = a * 10#A
-            Z0[-7] = b * 10#B
-            Z0[-6] = c * 10#Ci
+            Z0[-8] = a #A
+            Z0[-7] = b #B
+            Z0[-6] = c #Ci
             #Y0[-5] = 1 #sum
             T = np.linspace(0, t_end, N)
 
@@ -76,10 +76,10 @@ for a in range(2):
                 Z[i,:] = q.integrate(q.t+dt)
                 i += 1
             
-            AS = Z[:,-7]
-            BS = Z[:,-6]
-            CinS = Z[:,-5]
-            CoutS = Z[:,-4]
+            AS = Z[:,-8]
+            BS = Z[:,-7]
+            CinS = Z[:,-6]
+            CoutS = Z[:,-5]
             ABS = Z[:,-3]
             ACS = Z[:,-2]
             BCS = Z[:,-1]
